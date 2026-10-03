@@ -39,3 +39,18 @@ git submodule add https://github.com/micro-os-plus/devices-qemu-aarch64-xpack.gi
 
 ```
 
+## Update submodules
+
+To bring all submodules to the latest commit of their `xpack` branch:
+
+```sh
+node scripts/update-submodules.mjs --dry-run   # report only
+node scripts/update-submodules.mjs             # update
+```
+
+The script reads `.gitmodules`, so new submodules are picked up automatically.
+A submodule that must follow a different branch can set it with
+`git config -f .gitmodules submodule.<name>.branch <branch>`.
+Submodules with uncommitted changes or unpushed commits are skipped.
+
+The new submodule pointers are not committed; review and commit them manually.
