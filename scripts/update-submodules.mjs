@@ -10,7 +10,7 @@
 //   -h, --help           show this help
 //
 // Paths, if given, restrict the update to the matching submodules
-// (prefix match, e.g. `targets` or `core/startup-xpack`).
+// (prefix match, e.g. `targets` or `core/startup`).
 //
 // Uninitialised submodules are cloned, then all submodules are fetched in
 // parallel by git. Each one is then switched to the local branch (created

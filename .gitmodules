@@ -1,54 +1,54 @@
 [submodule "3rd-party/segger/segger-rtt-xpack"]
-	path = 3rd-party/segger/segger-rtt-xpack
+	path = 3rd-party/segger/segger-rtt
 	url = https://github.com/xpack-3rd-party/segger-rtt-xpack.git
 [submodule "3rd-party/segger/segger-system-view-xpack"]
-	path = 3rd-party/segger/segger-system-view-xpack
+	path = 3rd-party/segger/segger-system-view
 	url = https://github.com/xpack-3rd-party/segger-system-view-xpack.git
 [submodule "core/utils-lists-xpack"]
-	path = core/utils-lists-xpack
+	path = core/utils-lists
 	url = https://github.com/micro-os-plus/utils-lists-xpack.git
 [submodule "testing/micro-test-plus-xpack"]
-	path = testing/micro-test-plus-xpack
+	path = testing/micro-test-plus
 	url = https://github.com/micro-os-plus/micro-test-plus-xpack.git
 [submodule "diag/diag-trace-xpack"]
-	path = diag/diag-trace-xpack
+	path = diag/diag-trace
 	url = https://github.com/micro-os-plus/diag-trace-xpack.git
 [submodule "core/startup-xpack"]
-	path = core/startup-xpack
+	path = core/startup
 	url = https://github.com/micro-os-plus/startup-xpack.git
 [submodule "core/semihosting-xpack"]
-	path = core/semihosting-xpack
+	path = core/semihosting
 	url = https://github.com/micro-os-plus/semihosting-xpack.git
 [submodule "3rd-party/arm/arm-cmsis-core-xpack"]
-	path = 3rd-party/arm/arm-cmsis-core-xpack
+	path = 3rd-party/arm/arm-cmsis-core
 	url = https://github.com/xpack-3rd-party/arm-cmsis-core-xpack.git
 [submodule "helpers/build-helper-xpack"]
-	path = helpers/build-helper-xpack
+	path = helpers/build-helper
 	url = https://github.com/micro-os-plus/build-helper-xpack.git
 [submodule "targets/architecture-synthetic-posix-xpack"]
-	path = targets/architecture-synthetic-posix-xpack
+	path = targets/architecture-synthetic-posix
 	url = https://github.com/micro-os-plus/architecture-synthetic-posix-xpack.git
 [submodule "targets/architecture-cortexm-xpack"]
-	path = targets/architecture-cortexm-xpack
+	path = targets/architecture-cortexm
 	url = https://github.com/micro-os-plus/architecture-cortexm-xpack.git
 [submodule "targets/devices-qemu-cortexm-xpack"]
-	path = targets/devices-qemu-cortexm-xpack
+	path = targets/devices-qemu-cortexm
 	url = https://github.com/micro-os-plus/devices-qemu-cortexm-xpack.git
 [submodule "targets/architecture-riscv-xpack"]
-	path = targets/architecture-riscv-xpack
+	path = targets/architecture-riscv
 	url = https://github.com/micro-os-plus/architecture-riscv-xpack.git
 [submodule "targets/devices-qemu-riscv-xpack"]
-	path = targets/devices-qemu-riscv-xpack
+	path = targets/devices-qemu-riscv
 	url = https://github.com/micro-os-plus/devices-qemu-riscv-xpack.git
 [submodule "targets/architecture-aarch32-xpack"]
-	path = targets/architecture-aarch32-xpack
+	path = targets/architecture-aarch32
 	url = https://github.com/micro-os-plus/architecture-aarch32-xpack.git
 [submodule "targets/devices-qemu-aarch32-xpack"]
-	path = targets/devices-qemu-aarch32-xpack
+	path = targets/devices-qemu-aarch32
 	url = https://github.com/micro-os-plus/devices-qemu-aarch32-xpack.git
 [submodule "targets/architecture-aarch64-xpack"]
-	path = targets/architecture-aarch64-xpack
+	path = targets/architecture-aarch64
 	url = https://github.com/micro-os-plus/architecture-aarch64-xpack.git
 [submodule "targets/devices-qemu-aarch64-xpack"]
-	path = targets/devices-qemu-aarch64-xpack
+	path = targets/devices-qemu-aarch64
 	url = https://github.com/micro-os-plus/devices-qemu-aarch64-xpack.git
