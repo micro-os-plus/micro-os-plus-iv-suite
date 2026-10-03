@@ -5,28 +5,25 @@
 //
 //   -b, --branch <name>  default branch to follow (default: xpack); a
 //                        `branch = ...` entry in .gitmodules overrides it
-//   -j, --jobs <n>       number of submodules processed in parallel
-//                        (default: 8)
+//   -j, --jobs <n>       number of parallel fetches (default: 8)
 //   -n, --dry-run        fetch and report, but do not change anything
 //   -h, --help           show this help
 //
 // Paths, if given, restrict the update to the matching submodules
 // (prefix match, e.g. `targets` or `core/startup-xpack`).
 //
-// Each submodule is initialised if needed, fetched, switched to the local
-// branch (created to track origin/<branch> if missing) and fast-forwarded.
-// Submodules with uncommitted changes, or with local commits not yet in
-// origin, are reported and left untouched.
+// Uninitialised submodules are cloned, then all submodules are fetched in
+// parallel by git. Each one is then switched to the local branch (created
+// to track origin/<branch> if missing) and fast-forwarded. Submodules with
+// uncommitted changes, or with local commits not yet in origin, are
+// reported and left untouched.
 //
 // The superproject is not committed; review with `git status` and commit
 // the updated submodule pointers manually.
 
-import { execFile } from 'node:child_process'
-import { promisify } from 'node:util'
+import { execFileSync } from 'node:child_process'
 import { parseArgs } from 'node:util'
 import path from 'node:path'
-
-const execFileAsync = promisify(execFile)
 
 // ----------------------------------------------------------------------------
 
@@ -53,62 +50,32 @@ const jobs = Math.max(1, parseInt(opts.jobs, 10) || 1)
 
 // ----------------------------------------------------------------------------
 
-async function git(cwd, ...args) {
-  const { stdout } = await execFileAsync('git', args, {
+function git(cwd, ...args) {
+  return execFileSync('git', args, {
     cwd,
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'pipe'],
     maxBuffer: 16 * 1024 * 1024,
-  })
-  return stdout.trim()
-}
-
-async function gitOk(cwd, ...args) {
-  try {
-    await git(cwd, ...args)
-    return true
-  } catch {
-    return false
-  }
+  }).trim()
 }
 
 const short = (sha) => (sha ? sha.slice(0, 10) : '(none)')
 
 // The `version` from package.json at the given revision, or '-'.
-async function pkgVersion(dir, rev) {
+function pkgVersion(dir, rev) {
   try {
-    return JSON.parse(await git(dir, 'show', `${rev}:package.json`)).version || '-'
+    return JSON.parse(git(dir, 'show', `${rev}:package.json`)).version || '-'
   } catch {
     return '-'
   }
 }
 
-async function revInfo(dir, rev) {
-  const [sha, version] = await Promise.all([
-    git(dir, 'rev-parse', rev),
-    pkgVersion(dir, rev),
-  ])
-  return { sha, version }
-}
-
-// Run `fn` over `items`, at most `limit` at a time, preserving order.
-async function mapLimit(items, limit, fn) {
-  const results = new Array(items.length)
-  let next = 0
-  const worker = async () => {
-    while (next < items.length) {
-      const i = next++
-      results[i] = await fn(items[i], i)
-    }
-  }
-  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker))
-  return results
-}
-
 // ----------------------------------------------------------------------------
 
-async function listSubmodules(topDir) {
+function listSubmodules(topDir) {
   let out
   try {
-    out = await git(
+    out = git(
       topDir,
       'config',
       '--file',
@@ -138,46 +105,73 @@ async function listSubmodules(topDir) {
     }))
 }
 
-async function updateOne(topDir, sub) {
+function isInitialised(topDir, sub) {
+  const dir = path.join(topDir, sub.path)
+  try {
+    return git(dir, 'rev-parse', '--show-toplevel') === dir
+  } catch {
+    return false
+  }
+}
+
+// Called after fetching; brings one submodule to origin/<branch>.
+// Each git call costs ~20 ms to spawn, so they are kept to a minimum.
+function updateOne(topDir, sub) {
   const dir = path.join(topDir, sub.path)
   const { branch } = sub
   const remoteRef = `origin/${branch}`
 
-  // Initialise if not yet cloned.
-  const toplevel = await git(dir, 'rev-parse', '--show-toplevel').catch(() => '')
-  if (toplevel !== dir) {
-    if (dryRun) return { status: 'skip', msg: 'not initialised' }
-    await git(topDir, 'submodule', 'update', '--init', '--', sub.path)
+  // Current commit, current branch and uncommitted changes, in one call.
+  let headSha = ''
+  let current = ''
+  let dirty = false
+  for (const line of git(
+    dir,
+    'status',
+    '--porcelain=v2',
+    '--branch',
+    '--untracked-files=no'
+  ).split('\n')) {
+    if (line.startsWith('# branch.oid ')) headSha = line.slice(13)
+    else if (line.startsWith('# branch.head ')) current = line.slice(14)
+    else if (line && !line.startsWith('#')) dirty = true
   }
+  if (current === '(detached)') current = ''
 
-  const from = await revInfo(dir, 'HEAD')
+  // Local and remote branch commits, in one call.
+  const refs = new Map(
+    git(
+      dir,
+      'for-each-ref',
+      '--format=%(refname) %(objectname)',
+      `refs/heads/${branch}`,
+      `refs/remotes/${remoteRef}`
+    )
+      .split('\n')
+      .filter(Boolean)
+      .map((line) => line.split(' '))
+  )
+  const localSha = refs.get(`refs/heads/${branch}`)
+  const remoteSha = refs.get(`refs/remotes/${remoteRef}`)
 
-  await git(dir, 'fetch', '--quiet', '--tags', 'origin')
-
-  if (!(await gitOk(dir, 'rev-parse', '--verify', '--quiet', remoteRef))) {
+  if (!remoteSha) {
     return { status: 'error', msg: `no ${remoteRef} branch` }
   }
-  const to = await revInfo(dir, remoteRef)
 
-  const dirty = await git(dir, 'status', '--porcelain', '--untracked-files=no')
+  const from = { sha: headSha, version: pkgVersion(dir, 'HEAD') }
+  const to = {
+    sha: remoteSha,
+    version: remoteSha === headSha ? from.version : pkgVersion(dir, remoteRef),
+  }
+
   if (dirty) {
     return { status: 'skip', from, to, notes: ['uncommitted changes'] }
   }
 
-  const hasLocal = await gitOk(
-    dir,
-    'rev-parse',
-    '--verify',
-    '--quiet',
-    `refs/heads/${branch}`
-  )
-
-  if (hasLocal) {
-    const [ahead] = (
-      await git(dir, 'rev-list', '--left-right', '--count', `${branch}...${remoteRef}`)
+  if (localSha && localSha !== remoteSha) {
+    const ahead = Number(
+      git(dir, 'rev-list', '--count', `${remoteRef}..refs/heads/${branch}`)
     )
-      .split(/\s+/)
-      .map(Number)
     if (ahead > 0) {
       return {
         status: 'skip',
@@ -188,36 +182,36 @@ async function updateOne(topDir, sub) {
     }
   }
 
-  const current = await git(dir, 'branch', '--show-current')
   const notes = []
-  if (current !== branch) notes.push(`${dryRun ? 'will switch' : 'switched'} from ${current || 'detached HEAD'}`)
+  if (current !== branch) {
+    notes.push(
+      `${dryRun ? 'will switch' : 'switched'} from ${current || 'detached HEAD'}`
+    )
+  }
 
   if (dryRun) {
     return { status: from.sha === to.sha ? 'same' : 'would', from, to, notes }
   }
 
-  if (hasLocal) {
-    if (current !== branch) await git(dir, 'switch', '--quiet', branch)
-    await git(dir, 'merge', '--quiet', '--ff-only', remoteRef)
+  if (localSha) {
+    if (current !== branch) git(dir, 'switch', '--quiet', branch)
+    if (localSha !== remoteSha) {
+      git(dir, 'merge', '--quiet', '--ff-only', remoteRef)
+    }
   } else {
-    await git(dir, 'switch', '--quiet', '--track', '-c', branch, remoteRef)
+    git(dir, 'switch', '--quiet', '--track', '-c', branch, remoteRef)
   }
 
-  const after = await revInfo(dir, 'HEAD')
-  return {
-    status: after.sha === from.sha ? 'same' : 'updated',
-    from,
-    to: after,
-    notes,
-  }
+  // A successful fast-forward leaves HEAD at origin/<branch>.
+  return { status: from.sha === to.sha ? 'same' : 'updated', from, to, notes }
 }
 
 // ----------------------------------------------------------------------------
 
-async function main() {
-  const topDir = await git(process.cwd(), 'rev-parse', '--show-toplevel')
+function main() {
+  const topDir = git(process.cwd(), 'rev-parse', '--show-toplevel')
 
-  let subs = await listSubmodules(topDir)
+  let subs = listSubmodules(topDir)
   if (positionals.length) {
     const filters = positionals.map((p) =>
       path.relative(topDir, path.resolve(p)).replace(/\/+$/, '')
@@ -237,7 +231,26 @@ async function main() {
       `in ${topDir}...\n`
   )
 
-  const width = Math.max(...subs.map((s) => s.path.length))
+  // Clone missing submodules first, since only populated ones are fetched.
+  const missing = subs.filter((s) => !isInitialised(topDir, s))
+  if (missing.length && dryRun) {
+    subs.forEach((s) => (s.missing = missing.includes(s)))
+  } else if (missing.length) {
+    git(
+      topDir,
+      'submodule',
+      'update',
+      '--init',
+      `--jobs=${jobs}`,
+      '--',
+      ...missing.map((s) => s.path)
+    )
+  }
+
+  // A single parallel fetch of all populated submodules (and the
+  // superproject); everything after this is local.
+  git(topDir, 'fetch', '--quiet', '--recurse-submodules=yes', `--jobs=${jobs}`)
+
   const labels = {
     updated: 'updated ',
     would: 'outdated',
@@ -246,27 +259,34 @@ async function main() {
     error: 'ERROR   ',
   }
 
-  const results = await mapLimit(subs, jobs, async (sub) => {
-    let res
+  const results = subs.map((sub) => {
+    if (sub.missing) return { status: 'skip', msg: 'not initialised' }
     try {
-      res = await updateOne(topDir, sub)
+      return updateOne(topDir, sub)
     } catch (err) {
-      const msg = (err.stderr || err.message || String(err)).trim().split('\n')[0]
-      res = { status: 'error', msg }
+      const msg = (err.stderr || err.message || String(err))
+        .trim()
+        .split('\n')[0]
+      return { status: 'error', msg }
     }
-    return res
   })
 
   // Format `a -> b` columns, or just `a` when unchanged, aligned.
-  const vw = Math.max(1, ...results.flatMap((r) =>
-    r.from ? [r.from.version.length, r.to.version.length] : []))
+  const width = Math.max(...subs.map((s) => s.path.length))
+  const vw = Math.max(
+    1,
+    ...results.flatMap((r) =>
+      r.from ? [r.from.version.length, r.to.version.length] : []
+    )
+  )
   const change = (a, b, w) =>
     a === b ? a.padEnd(2 * w + 4) : `${a.padEnd(w)} -> ${b.padEnd(w)}`
 
   results.forEach((res, i) => {
     const sub = subs[i]
     const cols = res.from
-      ? change(res.from.version, res.to.version, vw) + '  ' +
+      ? change(res.from.version, res.to.version, vw) +
+        '  ' +
         change(short(res.from.sha), short(res.to.sha), 10)
       : res.msg
     const notes = [
@@ -274,8 +294,10 @@ async function main() {
       ...(res.notes ?? []),
     ]
     console.log(
-      `  ${labels[res.status]}  ${sub.path.padEnd(width)}  ${cols}` +
+      (
+        `  ${labels[res.status]}  ${sub.path.padEnd(width)}  ${cols}` +
         (notes.length ? `  (${notes.join(', ')})` : '')
+      ).trimEnd()
     )
   })
 
@@ -286,10 +308,10 @@ async function main() {
   )
 
   if (!dryRun && count('updated')) {
+    const updated = subs.filter((_, i) => results[i].status === 'updated')
     console.log(
       '\nReview with `git status` / `git diff --submodule`, then commit, e.g.:\n' +
-        '  git add ' + subs.filter((_, i) => results[i].status === 'updated')
-          .map((s) => s.path).join(' ') + '\n' +
+        `  git add ${updated.map((s) => s.path).join(' ')}\n` +
         '  git commit -m "submodules: update to latest"'
     )
   }
@@ -297,10 +319,9 @@ async function main() {
   return count('error') ? 1 : 0
 }
 
-main().then(
-  (code) => process.exit(code),
-  (err) => {
-    console.error(err.stderr?.trim() || err.message || err)
-    process.exit(2)
-  }
-)
+try {
+  process.exit(main())
+} catch (err) {
+  console.error(err.stderr?.trim() || err.message || err)
+  process.exit(2)
+}
