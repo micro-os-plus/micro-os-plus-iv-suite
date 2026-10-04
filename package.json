@@ -1,7 +1,7 @@
 {
   "name": "@micro-os-plus/iv-suite",
   "version": "0.1.0",
-  "description": "This repository provides the **µOS++ IVe Suite**, a set of projects that together form the **fourth edition** of µOS++.",
+  "description": "This repository provides the **µOS++ IV Suite**, a set of projects that together form the **fourth edition** of µOS++.",
   "homepage": "https://github.com/micro-os-plus/micro-os-plus-iv-suite#readme",
   "bugs": {
     "url": "https://github.com/micro-os-plus/micro-os-plus-iv-suite/issues"
