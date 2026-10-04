@@ -1,0 +1,26 @@
+{
+  "name": "@micro-os-plus/iv-suite",
+  "version": "0.1.0",
+  "description": "This repository provides the **µOS++ IVe Suite**, a set of projects that together form the **fourth edition** of µOS++.",
+  "homepage": "https://github.com/micro-os-plus/micro-os-plus-iv-suite#readme",
+  "bugs": {
+    "url": "https://github.com/micro-os-plus/micro-os-plus-iv-suite/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/micro-os-plus/micro-os-plus-iv-suite.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "update-submodules-check": "node scripts/update-submodules.mjs --dry-run",
+    "update-submodules": "node scripts/update-submodules.mjs",
+    "format-md-check": "prettier --config config/.prettierrc.json --ignore-path config/.prettierignore --prose-wrap always --check \"*.md\"",
+    "format-md": "prettier --config config/.prettierrc.json --ignore-path config/.prettierignore --prose-wrap always --write \"*.md\""
+  },
+  "devDependencies": {
+    "prettier": "^3.9.9"
+  }
+}

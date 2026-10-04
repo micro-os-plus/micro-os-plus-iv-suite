@@ -103,6 +103,7 @@ function listSubmodules(topDir) {
       // `branch = .` means "same name as the superproject branch".
       branch: s.branch && s.branch !== '.' ? s.branch : opts.branch,
     }))
+    .sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0))
 }
 
 function isInitialised(topDir, sub) {
@@ -217,7 +218,9 @@ function main() {
       path.relative(topDir, path.resolve(p)).replace(/\/+$/, '')
     )
     subs = subs.filter((s) =>
-      filters.some((f) => f === '' || s.path === f || s.path.startsWith(f + '/'))
+      filters.some(
+        (f) => f === '' || s.path === f || s.path.startsWith(f + '/')
+      )
     )
   }
 

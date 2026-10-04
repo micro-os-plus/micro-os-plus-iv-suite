@@ -1,10 +1,13 @@
 # micro-os-plus-iv-suite
 
-This repository provides the **µOS++ IVe Suite**, a set of projects that together form the **fourth edition** of µOS++.
+This repository provides the **µOS++ IVe Suite**, a set of projects that
+together form the **fourth edition** of µOS++.
 
-Each project within the suite is maintained in its own Git repository and is included here as a submodule for unified access.
+Each project within the suite is maintained in its own Git repository and is
+included here as a submodule for unified access.
 
-Compared to a monorepo, this approach enables more effective testing and supports the development of distinct web sub-sites, each with its own URL.
+Compared to a monorepo, this approach enables more effective testing and
+supports the development of distinct web sub-sites, each with its own URL.
 
 ## Getting the Sources
 
