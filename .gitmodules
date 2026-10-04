@@ -26,29 +26,72 @@
 	path = maintenance/build-helper
 	url = https://github.com/micro-os-plus/build-helper-xpack.git
 [submodule "targets/architecture-synthetic-posix-xpack"]
-	path = targets/architecture-synthetic-posix
+	path = targets/architectures/architecture-synthetic-posix
 	url = https://github.com/micro-os-plus/architecture-synthetic-posix-xpack.git
 [submodule "targets/architecture-cortexm-xpack"]
-	path = targets/architecture-cortexm
+	path = targets/architectures/architecture-cortexm
 	url = https://github.com/micro-os-plus/architecture-cortexm-xpack.git
 [submodule "targets/devices-qemu-cortexm-xpack"]
-	path = targets/devices-qemu-cortexm
+	path = targets/devices/devices-qemu-cortexm
 	url = https://github.com/micro-os-plus/devices-qemu-cortexm-xpack.git
 [submodule "targets/architecture-riscv-xpack"]
-	path = targets/architecture-riscv
+	path = targets/architectures/architecture-riscv
 	url = https://github.com/micro-os-plus/architecture-riscv-xpack.git
 [submodule "targets/devices-qemu-riscv-xpack"]
-	path = targets/devices-qemu-riscv
+	path = targets/devices/devices-qemu-riscv
 	url = https://github.com/micro-os-plus/devices-qemu-riscv-xpack.git
 [submodule "targets/architecture-aarch32-xpack"]
-	path = targets/architecture-aarch32
+	path = targets/architectures/architecture-aarch32
 	url = https://github.com/micro-os-plus/architecture-aarch32-xpack.git
 [submodule "targets/devices-qemu-aarch32-xpack"]
-	path = targets/devices-qemu-aarch32
+	path = targets/devices/devices-qemu-aarch32
 	url = https://github.com/micro-os-plus/devices-qemu-aarch32-xpack.git
 [submodule "targets/architecture-aarch64-xpack"]
-	path = targets/architecture-aarch64
+	path = targets/architectures/architecture-aarch64
 	url = https://github.com/micro-os-plus/architecture-aarch64-xpack.git
 [submodule "targets/devices-qemu-aarch64-xpack"]
-	path = targets/devices-qemu-aarch64
+	path = targets/devices/devices-qemu-aarch64
 	url = https://github.com/micro-os-plus/devices-qemu-aarch64-xpack.git
+[submodule "core/memory-allocators-xpack"]
+	path = core/memory-allocators
+	url = https://github.com/micro-os-plus/memory-allocators-xpack.git
+[submodule "rtos/rtos-xpack"]
+	path = rtos/rtos
+	url = https://github.com/micro-os-plus/rtos-xpack.git
+[submodule "rtos/ports/rtos-cortexm-xpack"]
+	path = rtos/ports/rtos-port-cortexm
+	url = https://github.com/micro-os-plus/rtos-cortexm-xpack.git
+[submodule "rtos/ports/rtos-synthetic-posix-xpack"]
+	path = rtos/ports/rtos-port-synthetic-posix
+	url = https://github.com/micro-os-plus/rtos-synthetic-posix-xpack.git
+[submodule "rtos/cmsis-os-xpack"]
+	path = rtos/cmsis-os
+	url = https://github.com/micro-os-plus/cmsis-os-xpack.git
+[submodule "io/posix-io-xpack"]
+	path = io/posix-io
+	url = https://github.com/micro-os-plus/posix-io-xpack.git
+[submodule "3rd-party/arm/arm-cmsis-rtos-validator"]
+	path = 3rd-party/arm/arm-cmsis-rtos-validator
+	url = https://github.com/xpacks/arm-cmsis-rtos-validator.git
+[submodule "3rd-party/chan/chan-fatfs"]
+	path = 3rd-party/chan/chan-fatfs
+	url = https://github.com/xpacks/chan-fatfs.git
+[submodule "3rd-party/libucontext/libucontext-xpack"]
+	path = 3rd-party/libucontext/libucontext
+	url = https://github.com/xpack-3rd-party/libucontext-xpack.git
+[submodule "3rd-party/raspberrypi/raspberrypi-pico-sdk-xpack"]
+	path = 3rd-party/raspberrypi/pico-sdk
+	url = https://github.com/xpack-3rd-party/raspberrypi-pico-sdk-xpack.git
+[submodule "3rd-party/lixpaulian/micro-http-client"]
+	path = 3rd-party/lixpaulian/micro-http-client
+	url = https://github.com/lixpaulian/micro-http-client.git
+	branch = main
+[submodule "3rd-party/boost/boost-ut-xpack"]
+	path = 3rd-party/boost/boost-ut
+	url = https://github.com/xpack-3rd-party/boost-ut-xpack.git
+[submodule "3rd-party/catch2/catch2-xpack"]
+	path = 3rd-party/catch2/catch2
+	url = https://github.com/xpack-3rd-party/catch2-xpack.git
+[submodule "3rd-party/google/googletest-xpack"]
+	path = 3rd-party/google/googletest
+	url = https://github.com/xpack-3rd-party/googletest-xpack.git
