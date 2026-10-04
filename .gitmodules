@@ -23,7 +23,7 @@
 	path = 3rd-party/arm/arm-cmsis-core
 	url = https://github.com/xpack-3rd-party/arm-cmsis-core-xpack.git
 [submodule "helpers/build-helper-xpack"]
-	path = helpers/build-helper
+	path = maintenance/build-helper
 	url = https://github.com/micro-os-plus/build-helper-xpack.git
 [submodule "targets/architecture-synthetic-posix-xpack"]
 	path = targets/architecture-synthetic-posix

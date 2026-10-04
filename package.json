@@ -15,10 +15,10 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "update-submodules-check": "node scripts/update-submodules.mjs --dry-run",
-    "update-submodules": "node scripts/update-submodules.mjs",
-    "format-md-check": "prettier --config config/.prettierrc.json --ignore-path config/.prettierignore --prose-wrap always --check \"*.md\"",
-    "format-md": "prettier --config config/.prettierrc.json --ignore-path config/.prettierignore --prose-wrap always --write \"*.md\""
+    "update-submodules-check": "node maintenance/scripts/update-submodules.mjs --dry-run",
+    "update-submodules": "node maintenance/scripts/update-submodules.mjs",
+    "format-md-check": "prettier --config maintenance/config/.prettierrc.json --ignore-path maintenance/config/.prettierignore --prose-wrap always --check \"*.md\"",
+    "format-md": "prettier --config maintenance/config/.prettierrc.json --ignore-path maintenance/config/.prettierignore --prose-wrap always --write \"*.md\""
   },
   "devDependencies": {
     "prettier": "^3.9.9"

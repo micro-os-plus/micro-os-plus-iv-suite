@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Update all git submodules to the latest commit of their `xpack` branch.
 //
-// Usage: node scripts/update-submodules.mjs [options] [path...]
+// Usage: node maintenance/scripts/update-submodules.mjs [options] [path...]
 //
 //   -b, --branch <name>  default branch to follow (default: xpack); a
 //                        `branch = ...` entry in .gitmodules overrides it
@@ -39,7 +39,7 @@ const { values: opts, positionals } = parseArgs({
 
 if (opts.help) {
   console.log(
-    'Usage: node scripts/update-submodules.mjs ' +
+    'Usage: node maintenance/scripts/update-submodules.mjs ' +
       '[-b branch] [-j jobs] [-n] [path...]'
   )
   process.exit(0)
