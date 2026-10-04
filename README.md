@@ -1,7 +1,7 @@
 # micro-os-plus-iv-suite
 
-This repository provides the **µOS++ IVe Suite**, a set of projects that
-together form the **fourth edition** of µOS++.
+This repository provides the **µOS++ IV Suite**, a set of projects that together
+form the **fourth edition** of µOS++.
 
 Each project within the suite is maintained in its own Git repository and is
 included here as a submodule for unified access.
@@ -17,6 +17,8 @@ The project is open source and is available on GitHub at
 To obtain a local copy, execute:
 
 ```sh
+rm -rf ~/Work/micro-os-plus/micro-os-plus-iv-suite.git && \
+mkdir -p ~/Work/micro-os-plus && \
 git clone --recurse-submodules https://github.com/micro-os-plus/micro-os-plus-iv-suite.git micro-os-plus-iv-suite.git
 ```
 
