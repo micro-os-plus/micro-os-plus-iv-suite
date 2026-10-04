@@ -61,12 +61,14 @@ function git(cwd, ...args) {
 
 const short = (sha) => (sha ? sha.slice(0, 10) : '(none)')
 
-// The `version` from package.json at the given revision, or '-'.
-function pkgVersion(dir, rev) {
+// The `name` and `version` from package.json at the given revision.
+// Both fall back to a placeholder when the file or the field is missing.
+function pkgInfo(dir, rev) {
   try {
-    return JSON.parse(git(dir, 'show', `${rev}:package.json`)).version || '-'
+    const pkg = JSON.parse(git(dir, 'show', `${rev}:package.json`))
+    return { name: pkg.name || '', version: pkg.version || '-' }
   } catch {
-    return '-'
+    return { name: '', version: '-' }
   }
 }
 
@@ -159,10 +161,11 @@ function updateOne(topDir, sub) {
     return { status: 'error', msg: `no ${remoteRef} branch` }
   }
 
-  const from = { sha: headSha, version: pkgVersion(dir, 'HEAD') }
+  const from = { sha: headSha, ...pkgInfo(dir, 'HEAD') }
   const to = {
     sha: remoteSha,
-    version: remoteSha === headSha ? from.version : pkgVersion(dir, remoteRef),
+    version:
+      remoteSha === headSha ? from.version : pkgInfo(dir, remoteRef).version,
   }
 
   if (dirty) {
@@ -275,7 +278,11 @@ function main() {
   })
 
   // Format `a -> b` columns, or just `a` when unchanged, aligned.
-  const width = Math.max(...subs.map((s) => s.path.length))
+  // The scoped name from package.json, falling back to the path when it is
+  // unavailable (no package.json, or an uninitialised submodule).
+  const keys = results.map((r, i) => r.from?.name || subs[i].path)
+  // const width = Math.max(...subs.map((s) => s.path.length))
+  const width = Math.max(...keys.map((k) => k.length))
   const vw = Math.max(
     1,
     ...results.flatMap((r) =>
@@ -298,7 +305,8 @@ function main() {
     ]
     console.log(
       (
-        `  ${labels[res.status]}  ${sub.path.padEnd(width)}  ${cols}` +
+        // `- ${labels[res.status]}  ${sub.path.padEnd(width)}  ${cols}` +
+        `- ${labels[res.status]}  ${keys[i].padEnd(width)}  ${cols}` +
         (notes.length ? `  (${notes.join(', ')})` : '')
       ).trimEnd()
     )
