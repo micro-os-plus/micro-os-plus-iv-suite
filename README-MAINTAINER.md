@@ -17,8 +17,8 @@ git submodule add https://github.com/micro-os-plus/semihosting-xpack.git core/se
 git submodule add https://github.com/micro-os-plus/startup-xpack.git core/startup
 git submodule add https://github.com/micro-os-plus/utils-lists-xpack.git core/utils-lists
 
-mkdir -p diag
-git submodule add https://github.com/micro-os-plus/diag-trace-xpack.git diag/diag-trace
+mkdir -p debug
+git submodule add https://github.com/micro-os-plus/diag-trace-xpack.git debug/diag-trace
 
 mkdir -p helpers
 git submodule add https://github.com/micro-os-plus/build-helper-xpack.git helpers/build-helper

@@ -10,8 +10,8 @@
 [submodule "testing/micro-test-plus-xpack"]
 	path = testing/micro-test-plus
 	url = https://github.com/micro-os-plus/micro-test-plus-xpack.git
-[submodule "diag/diag-trace-xpack"]
-	path = diag/diag-trace
+[submodule "debug/diag-trace-xpack"]
+	path = debug/diag-trace
 	url = https://github.com/micro-os-plus/diag-trace-xpack.git
 [submodule "core/startup-xpack"]
 	path = core/startup
