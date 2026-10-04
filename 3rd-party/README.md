@@ -34,4 +34,5 @@ TODO: `lixpaulian/micro-http-client` is not packaged as an xPack and has no
 `xpack` branch; it follows `main`, via a `branch` entry in `.gitmodules`.
 
 New third-party libraries should be added in the folder of their vendor (create
-it if needed), as described in `README-MAINTAINER.md`.
+it if needed), as described in
+[README-MAINTAINER](../maintenance/README-MAINTAINER.md).

@@ -1,5 +1,8 @@
 # README-MAINTAINER
 
+All commands below are to be run from the root of the superproject,
+not from this folder.
+
 ## Submodules
 
 The submodules were added with the following commands:
