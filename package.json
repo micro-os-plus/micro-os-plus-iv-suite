@@ -1,26 +1,36 @@
 {
   "name": "@micro-os-plus/iv-suite",
   "version": "0.1.0",
-  "description": "This repository provides the **µOS++ IV Suite**, a set of projects that together form the **fourth edition** of µOS++.",
-  "homepage": "https://github.com/micro-os-plus/micro-os-plus-iv-suite#readme",
-  "bugs": {
-    "url": "https://github.com/micro-os-plus/micro-os-plus-iv-suite/issues"
+  "description": "This repository provides the **µOS++ IV Suite**, a set of projects that together form the **fourth edition** of the µOS++ framework.",
+  "keywords": [
+    "micro-os-plus",
+    "suite",
+    "framework"
+  ],
+  "license": "MIT",
+  "author": {
+    "name": "Liviu Ionescu",
+    "email": "ilg@livius.net",
+    "url": "https://github.com/ilg-ul"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/micro-os-plus/micro-os-plus-iv-suite.git"
   },
-  "license": "ISC",
-  "author": "",
-  "type": "commonjs",
-  "main": "index.js",
+  "homepage": "https://github.com/micro-os-plus/micro-os-plus-iv-suite#readme",
+  "bugs": {
+    "url": "https://github.com/micro-os-plus/micro-os-plus-iv-suite/issues"
+  },
+  "devDependencies": {
+    "prettier": "^3.9.9"
+  },
   "scripts": {
     "update-submodules-check": "node maintenance/scripts/update-submodules.mjs --dry-run",
     "update-submodules": "node maintenance/scripts/update-submodules.mjs",
     "format-md-check": "prettier --config maintenance/config/.prettierrc.json --ignore-path maintenance/config/.prettierignore --prose-wrap always --check \"*.md\"",
     "format-md": "prettier --config maintenance/config/.prettierrc.json --ignore-path maintenance/config/.prettierignore --prose-wrap always --write \"*.md\""
   },
-  "devDependencies": {
-    "prettier": "^3.9.9"
+  "engines": {
+    "node": ">=20.0"
   }
 }
