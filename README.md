@@ -19,7 +19,9 @@ To obtain a local copy, execute:
 ```sh
 rm -rf ~/Work/micro-os-plus/micro-os-plus-iv-suite.git && \
 mkdir -p ~/Work/micro-os-plus && \
-git clone --recurse-submodules https://github.com/micro-os-plus/micro-os-plus-iv-suite.git micro-os-plus-iv-suite.git
+git clone --recurse-submodules \
+  https://github.com/micro-os-plus/micro-os-plus-iv-suite.git \
+  ~/Work/micro-os-plus/micro-os-plus-iv-suite.git
 ```
 
 (to be continued)
